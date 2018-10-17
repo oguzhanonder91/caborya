@@ -26,7 +26,9 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
 
     @Override
     public List<T> saveAll(List<T> list) {
-        list.stream().peek(s->s.setEntityState(BaseEntity.EntityState.ACTIVE)).collect(Collectors.toList());
+        list.stream()
+                .peek(s->s.setEntityState(BaseEntity.EntityState.ACTIVE))
+                .collect(Collectors.toList());
         return baseRepository.saveAll(list);
     }
 
@@ -37,7 +39,9 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
 
     @Override
     public void deleteAll(List<T> list) {
-        list.stream().peek(s->s.setEntityState(BaseEntity.EntityState.PASSIVE)).collect(Collectors.toList());
+        list.stream()
+                .peek(s->s.setEntityState(BaseEntity.EntityState.PASSIVE))
+                .collect(Collectors.toList());
         baseRepository.saveAll(list);
     }
 
