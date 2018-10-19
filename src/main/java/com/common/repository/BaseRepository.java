@@ -11,6 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by oguzhanonder - 3.10.2018
  */
-@NoRepositoryBean
-public interface BaseRepository<T> extends JpaRepository<T,String>{
+@Repository
+public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T,String>{
 }
