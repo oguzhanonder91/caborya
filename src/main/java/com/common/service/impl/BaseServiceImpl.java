@@ -62,7 +62,7 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
 
     @Override
     public boolean existsById(String id) {
-        return false;
+        return repository.existsById(id);
     }
 
     @Override
