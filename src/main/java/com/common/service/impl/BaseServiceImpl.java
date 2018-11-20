@@ -1,14 +1,16 @@
 package com.common.service.impl;
 
+import com.common.dao.BaseDao;
+import com.common.entity.User;
 import com.common.repository.BaseRepository;
 import com.common.entity.BaseEntity;
 import com.common.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +23,10 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
 
     @Autowired
     private BaseRepository<T> repository;
+
+    @Autowired
+    private BaseDao baseDao;
+
 
     @Override
     public List<T> saveAll(List<T> list) {
@@ -108,6 +114,10 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
     @Override
     public T save(T t) {
         t.setEntityState(BaseEntity.EntityState.ACTIVE);
+        t.setLastUpdatedBy(null);
+        t.setLastUpdatedDate(null);
+        t.setCreatedBy(String.valueOf(baseDao.getCurrentAuditor()));
+        t.setCreatedDate(new Date(System.currentTimeMillis()));
         return (T) repository.save(t);
     }
 
@@ -125,6 +135,8 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
     @Override
     public T update(T t) {
         t.setEntityState(BaseEntity.EntityState.ACTIVE);
+        t.setLastUpdatedBy(String.valueOf(baseDao.getCurrentAuditor()));
+        t.setLastUpdatedDate(new Date(System.currentTimeMillis()));
         return (T) repository.save(t);
     }
 }

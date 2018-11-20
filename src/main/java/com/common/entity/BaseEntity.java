@@ -21,7 +21,6 @@ import java.util.Date;
  * Created by oguzhanonder - 3.10.2018
  */
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity  implements Serializable{
 
     private static final long serialVersionUID = 1914842698571907341L;
@@ -36,13 +35,11 @@ public abstract class BaseEntity  implements Serializable{
     private long lastUpdated;
 
     @Column
-    @CreatedBy
     private String createdBy;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "EET")
-    @CreatedDate
     private Date createdDate;
 
     @Column(nullable = true)
@@ -52,7 +49,6 @@ public abstract class BaseEntity  implements Serializable{
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "EET")
-    @LastModifiedDate
     private Date lastUpdatedDate;
 
 
