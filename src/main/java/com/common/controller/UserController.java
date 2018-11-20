@@ -1,6 +1,5 @@
 package com.common.controller;
 
-import com.common.util.AuthenticationInformation;
 import com.common.util.OnRegistrationCompleteEvent;
 import com.common.dto.UserDto;
 import com.common.entity.User;
@@ -11,20 +10,13 @@ import com.common.util.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by oguzhanonder - 18.10.2018
@@ -43,12 +35,8 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
-    @Autowired
-    private AuthenticationInformation information;
-
     @GetMapping
     public List<User> findAll() {
-        information.getAuthentication();
         return userService.findAll();
     }
 
