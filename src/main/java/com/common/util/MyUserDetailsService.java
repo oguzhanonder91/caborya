@@ -1,8 +1,10 @@
 package com.common.util;
 
+import com.common.dao.UserDao;
 import com.common.entity.Role;
 import com.common.entity.User;
 import com.common.repository.UserRepository;
+import com.common.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,7 +28,10 @@ import java.util.List;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private LoginAttemptService loginAttemptService;
@@ -46,30 +51,17 @@ public class MyUserDetailsService implements UserDetailsService {
         }
 
         try {
-            User user = userRepository.findByEmail(email);
+            User user = userService.findByEmail(email);
             if (user == null) {
                 throw new UsernameNotFoundException("No user found with username: " + email);
             }
 
-            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, userDao.getAuthorities(user.getRoles()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    // UTIL
-
-    private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
-        return getGrantedAuthorities(roles);
-    }
-
-    private List<GrantedAuthority> getGrantedAuthorities(Collection<Role> roles) {
-        final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getCode()));
-        }
-        return authorities;
-    }
 
     private String getClientIP() {
         final String xfHeader = request.getHeader("X-Forwarded-For");

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Created by oguzhanonder - 7.11.2018
  */
+
 public class CommonMethod {
 
     @Autowired
@@ -40,23 +41,23 @@ public class CommonMethod {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 
-    public static String getAppUrl(HttpServletRequest request) {
+    public String getAppUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
-    private SimpleMailMessage constructResendVerificationTokenEmail(String contextPath, Locale locale, VerificationToken newToken, User user) {
+    public SimpleMailMessage constructResendVerificationTokenEmail(String contextPath, Locale locale, VerificationToken newToken, User user) {
         String confirmationUrl = contextPath + "/registrationConfirm.html?token=" + newToken.getToken();
         String message = messages.getMessage("message.resendToken", null, locale);
         return constructEmail("Resend Registration Token", message + " \r\n" + confirmationUrl, user);
     }
 
-    private SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
+    public SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
         String url = contextPath + "/user/changePassword?id=" + user.getId() + "&token=" + token;
         String message = messages.getMessage("message.resetPassword", null, locale);
         return constructEmail("Reset Password", message + " \r\n" + url, user);
     }
 
-    private SimpleMailMessage constructEmail(String subject, String body, User user) {
+    public SimpleMailMessage constructEmail(String subject, String body, User user) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
         email.setText(body);

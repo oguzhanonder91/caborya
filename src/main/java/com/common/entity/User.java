@@ -1,5 +1,6 @@
 package com.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Email;
 import org.jboss.aerogear.security.otp.api.Base32;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by oguzhanonder - 18.10.2018
@@ -41,6 +43,16 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "EET")
+    private Date lastLoginTime;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "EET")
+    private Date lastLogoutTime;
 
 
     public User() {
@@ -103,6 +115,22 @@ public class User extends BaseEntity {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public Date getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Date lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public Date getLastLogoutTime() {
+        return lastLogoutTime;
+    }
+
+    public void setLastLogoutTime(Date lastLogoutTime) {
+        this.lastLogoutTime = lastLogoutTime;
     }
 }
 

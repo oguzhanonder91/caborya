@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface UserService extends BaseService<User>{
     User findByEmail(String email);
+
     User registerNewUserAccount(UserDto accountDto);
 
     void deleteUser(User user);
@@ -31,8 +32,6 @@ public interface UserService extends BaseService<User>{
 
     String validateVerificationToken(String token);
 
-    List<String> getUsersFromSessionRegistry();
-
-    void login(HttpServletRequest httpServletRequest, String user, String pass);
+    User getUser(String verificationToken);
 
 }

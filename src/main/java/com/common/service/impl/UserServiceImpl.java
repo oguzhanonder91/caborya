@@ -10,6 +10,7 @@ import com.common.repository.VerificationTokenRepository;
 import com.common.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +60,6 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         userDao.createPasswordResetTokenForUser(user, token);
     }
 
-
     @Override
     public PasswordResetToken getPasswordResetToken(String token) {
         return userDao.getPasswordResetToken(token);
@@ -81,14 +81,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         return userDao.validateVerificationToken(token);
     }
 
-    @Override
-    public List<String> getUsersFromSessionRegistry() {
-        return userDao.getUsersFromSessionRegistry();
-    }
 
     @Override
-    public void login(HttpServletRequest httpServletRequest,String user, String pass) {
-        userDao.authWithAuthManager(httpServletRequest, user, pass);
+    public User getUser(String verificationToken) {
+        return userDao.getUser(verificationToken);
     }
 }
 

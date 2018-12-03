@@ -1,22 +1,27 @@
 package com.common.controller;
 
-import com.common.util.OnRegistrationCompleteEvent;
+import com.common.dto.PasswordDto;
+import com.common.entity.VerificationToken;
+import com.common.exception.BaseServerException;
+import com.common.util.*;
 import com.common.dto.UserDto;
 import com.common.entity.User;
 import com.common.exception.BaseNotFoundException;
 import com.common.service.UserService;
-import com.common.util.CommonMethod;
 import com.common.util.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Optional;
+import javax.validation.Valid;
+import java.util.*;
+
 
 /**
  * Created by oguzhanonder - 18.10.2018
@@ -35,8 +40,22 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    private MessageSource messages;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private CommonMethod commonMethod;
+
+
+    @Autowired
+    private AuthenticationInformation information;
+
     @GetMapping
     public List<User> findAll() {
+        information.getAuthentication();
         return userService.findAll();
     }
 
@@ -49,23 +68,40 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody UserDto userDto , HttpServletRequest request,BindingResult bindingResult) {
-        userValidator.validate(userDto,bindingResult);
+    public User create(@Valid UserDto userDto, HttpServletRequest request, BindingResult bindingResult) {
+        userValidator.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
             return null;
         }
         User userRegistered = userService.registerNewUserAccount(userDto);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userRegistered, request.getLocale(), CommonMethod.getAppUrl(request)));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userRegistered, request.getLocale(), commonMethod.getAppUrl(request)));
         return userRegistered;
     }
 
-    @PostMapping("/login")
-    @ResponseStatus
-    public void login(@RequestBody UserDto userDto , HttpServletRequest request, BindingResult bindingResult) throws ServletException {
-       request.login(userDto.getEmail(),userDto.getPassword());
+    @PostMapping(value = "/user/updatePassword")
+    public String changeUserPassword(Locale locale, @Valid PasswordDto passwordDto) {
+        Authentication authentication = information.getAuthentication();
+        User user = userService.findByEmail(((User) authentication.getPrincipal()).getEmail());
+        if (!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())) {
+            throw new BaseServerException();
+        }
+        userService.changeUserPassword(user, passwordDto.getNewPassword());
+        return messages.getMessage("message.updatePasswordSuc", null, locale);
     }
 
+    @GetMapping("/registrationConfirm/{token}")
+    public String confirmRegistration(@PathVariable String token) {
+        String result = userService.validateVerificationToken(token);
+        return result;
+    }
+
+    @GetMapping("/user/resendRegistrationToken/{token}")
+    public String resendRegistrationToken(HttpServletRequest request, @PathVariable("token") String existingToken) {
+        VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
+        User user = userService.getUser(newToken.getToken());
+        mailSender.send(commonMethod.constructResendVerificationTokenEmail(commonMethod.getAppUrl(request), request.getLocale(), newToken, user));
+        return messages.getMessage("message.resendToken", null, request.getLocale());
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {

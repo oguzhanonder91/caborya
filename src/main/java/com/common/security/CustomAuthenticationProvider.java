@@ -1,7 +1,9 @@
 package com.common.security;
 
 import com.common.entity.User;
+import com.common.exception.BaseServerException;
 import com.common.repository.UserRepository;
+import com.common.service.UserService;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,25 +20,19 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
-         User user = userRepository.findByEmail(auth.getName());
-        if ((user == null)) {
-            throw new BadCredentialsException("Invalid username or password");
+         User user = userService.findByEmail(auth.getName());
+        if (user == null || !passwordEncoder.matches((String)auth.getCredentials(),user.getPassword())) {
+            throw new BaseServerException("Invalid username or password");
         }
-         Authentication result = super.authenticate(auth);
+        Authentication result = super.authenticate(auth);
         return new UsernamePasswordAuthenticationToken(user, result.getCredentials(), result.getAuthorities());
-    }
-
-    private boolean isValidLong(String code) {
-        try {
-            Long.parseLong(code);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
     }
 
     @Override

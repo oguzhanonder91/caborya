@@ -1,8 +1,10 @@
 package com.common.util;
 
+import com.common.dao.UserDao;
 import com.common.entity.PasswordResetToken;
 import com.common.entity.User;
 import com.common.repository.PasswordResetTokenRepository;
+import com.common.service.PasswordResetTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,16 +25,14 @@ import java.util.Calendar;
 public class UserSecurityService implements ISecurityUserService {
 
     @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private PasswordResetTokenService passwordResetTokenService;
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
-
-    // API
+    private UserDao userDao;
 
     @Override
     public String validatePasswordResetToken(String id, String token) {
-        PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+        PasswordResetToken passToken = passwordResetTokenService.findByToken(token);
         if ((passToken == null) || (passToken.getUser().getId() != id)) {
             return "invalidToken";
         }
@@ -43,7 +43,7 @@ public class UserSecurityService implements ISecurityUserService {
         }
 
         User user = passToken.getUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, userDao.getAuthorities(user.getRoles()));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return null;
     }

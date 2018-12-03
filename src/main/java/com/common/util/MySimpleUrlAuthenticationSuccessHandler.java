@@ -1,6 +1,7 @@
 package com.common.util;
 
 import com.common.entity.User;
+import com.common.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by oguzhanonder - 29.10.2018
@@ -32,9 +34,12 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     @Autowired
     ActiveUserStore activeUserStore;
 
+    @Autowired
+    UserService userService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        handle(request, response, authentication);
+        //handle(request, response, authentication);
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60);
@@ -47,6 +52,10 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             }
             LoggedUser user = new LoggedUser(username, activeUserStore);
             session.setAttribute("user", user);
+            User userLogin = userService.findByEmail(user.getUsername());
+            userLogin.setLastLoginTime(new Date(System.currentTimeMillis()));
+            userService.update(userLogin);
+
         }
         clearAuthenticationAttributes(request);
     }

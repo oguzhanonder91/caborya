@@ -38,4 +38,9 @@ public class VerificationTokenImpl extends BaseServiceImpl<VerificationToken> im
     public void deleteByExpiryDateLessThan(Date now) {
         verificationTokenRepository.deleteByExpiryDateLessThan(now);
     }
+
+    @Override
+    public void deleteAllExpiredSince(Date now) {
+        verificationTokenRepository.deleteAllExpiredSince(now);
+    }
 }

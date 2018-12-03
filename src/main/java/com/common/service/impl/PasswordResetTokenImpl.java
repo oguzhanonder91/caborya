@@ -35,6 +35,11 @@ public class PasswordResetTokenImpl extends BaseServiceImpl<PasswordResetToken> 
     }
 
     @Override
+    public void deleteAllExpiredSince(Date now) {
+        passwordResetTokenRepository.deleteAllExpiredSince(now);
+    }
+
+    @Override
     public void deleteByExpiryDateLessThan(Date now) {
         passwordResetTokenRepository.deleteByExpiryDateLessThan(now);
     }

@@ -114,8 +114,6 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
     @Override
     public T save(T t) {
         t.setEntityState(BaseEntity.EntityState.ACTIVE);
-        t.setLastUpdatedBy(null);
-        t.setLastUpdatedDate(null);
         t.setCreatedBy(String.valueOf(baseDao.getCurrentAuditor()));
         t.setCreatedDate(new Date(System.currentTimeMillis()));
         return (T) repository.save(t);
