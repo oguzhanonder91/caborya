@@ -1,6 +1,5 @@
 package com.configuration;
 
-import com.common.security.CorsFilter;
 import com.common.security.CustomAuthenticationProvider;
 import com.common.security.CustomRememberMeServices;
 import com.common.security.CustomWebAuthenticationDetailsSource;
@@ -107,16 +106,9 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider authProvider() {
-        final CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
+        CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(encoder());
         return authProvider;
     }
-
-    @Bean
-    CorsFilter corsFilter() {
-        CorsFilter filter = new CorsFilter();
-        return filter;
-    }
-
 }
