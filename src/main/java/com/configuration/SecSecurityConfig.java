@@ -45,7 +45,6 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomWebAuthenticationDetailsSource authenticationDetailsSource;
 
-
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(11);

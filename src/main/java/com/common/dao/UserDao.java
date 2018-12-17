@@ -70,7 +70,7 @@ public class UserDao {
         user.setSurname(accountDto.getSurname());
         user.setEmail(accountDto.getEmail());
         user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-        user.setRoles(StringUtils.isEmpty(accountDto.getRoleCode()) ? Arrays.asList(roleService.findByCode("USER")) : Arrays.asList(roleService.findByCode(accountDto.getRoleCode())));
+        user.setRoles(Arrays.asList(roleService.findByCode(accountDto.getRoleCode())));
         return user;
     }
 
