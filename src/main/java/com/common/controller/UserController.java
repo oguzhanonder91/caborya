@@ -55,7 +55,6 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll() {
-        information.getAuthentication();
         return userService.findAll();
     }
 
