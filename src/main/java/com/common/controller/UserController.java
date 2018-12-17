@@ -76,7 +76,7 @@ public class UserController {
 
 
     // Menu - Account only update password
-    @PostMapping(value = "/updatePassword")
+    @PutMapping(value = "/updatePassword")
     public String changeUserPassword(Locale locale, @Valid PasswordDto passwordDto) {
         Authentication authentication = information.getAuthentication();
         User user = userService.findByEmail(((User) authentication.getPrincipal()).getEmail());
@@ -88,7 +88,7 @@ public class UserController {
     }
 
     // forget password
-    @PostMapping(value = "/resetPassword")
+    @PutMapping(value = "/resetPassword")
     public ResponseEntity<String> resetPassword(HttpServletRequest request, @RequestParam("email")  String userEmail) {
          User user = userService.findByEmail(userEmail);
         if (user != null) {
@@ -110,7 +110,7 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "/savePassword")
+    @PutMapping(value = "/savePassword")
     @ResponseBody
     public ResponseEntity<String> savePassword(Locale locale, @Valid PasswordDto passwordDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
