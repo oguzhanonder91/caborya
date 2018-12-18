@@ -41,6 +41,9 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         //handle(request, response, authentication);
         HttpSession session = request.getSession(false);
+
+        String email = ((User)authentication.getPrincipal()).getEmail();
+        LOGGER.info("Login Successful with Principal: " + email);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60);
 

@@ -32,7 +32,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
          HttpSession session = request.getSession();
 
          String email = ((User)authentication.getPrincipal()).getEmail();
-        LOGGER.info("Logout Successful with Principal: " + email);
+         LOGGER.info("Logout Successful with Principal: " + email);
 
         if (session != null) {
             session.removeAttribute("user");
@@ -40,9 +40,9 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
             userLogin.setLastLogoutTime(new Date(System.currentTimeMillis()));
             userService.update(userLogin);
 
-            response.setStatus(HttpServletResponse.SC_OK);
+            //response.setStatus(HttpServletResponse.SC_OK);
         }
 
-        response.sendRedirect("/logout.html?logSucc=true");
+        //response.sendRedirect("/logout.html?logSucc=true");
     }
 }

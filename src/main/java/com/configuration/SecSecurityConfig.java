@@ -82,7 +82,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/registration","/registrationConfirm","/resendRegistrationToken","/resetPassword").permitAll()
+                .antMatchers("/registration","/registrationConfirm","/resendRegistrationToken").permitAll()
                 .antMatchers("/*").authenticated()
                 .and()
                     .formLogin()
@@ -97,7 +97,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutSuccessHandler(myLogoutSuccessHandler)
-                .invalidateHttpSession(false)
+                .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
                 .and()
