@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 import com.common.entity.User;
 import com.common.service.UserService;

@@ -22,14 +22,11 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
          User user = userService.findByEmail(auth.getName());
-        if (user == null || !passwordEncoder.matches((String)auth.getCredentials(),user.getPassword())) {
-            throw new BaseServerException("Invalid username or password");
+        if (user == null) {
+            throw new BadCredentialsException("Invalid username or password");
         }
         Authentication result = super.authenticate(auth);
         return new UsernamePasswordAuthenticationToken(user, result.getCredentials(), result.getAuthorities());

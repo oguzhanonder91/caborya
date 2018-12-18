@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

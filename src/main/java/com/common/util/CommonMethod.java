@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -46,13 +47,13 @@ public class CommonMethod {
     }
 
     public SimpleMailMessage constructResendVerificationTokenEmail(String contextPath, Locale locale, VerificationToken newToken, User user) {
-        String confirmationUrl = contextPath + "/registrationConfirm.html?token=" + newToken.getToken();
+        String url = contextPath + File.separator + "user" + File.separator + "registrationConfirm" + File.separator +newToken;
         String message = messages.getMessage("message.resendToken", null, locale);
-        return constructEmail("Resend Registration Token", message + " \r\n" + confirmationUrl, user);
+        return constructEmail("Resend Registration Token", message + " \r\n" + url, user);
     }
 
     public SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
-        String url = contextPath + "/user/changePassword?id=" + user.getId() + "&token=" + token;
+        String url = contextPath + File.separator + "user" + File.separator + "changePassword" + File.separator + user.getId() + File.separator +token;
         String message = messages.getMessage("message.resetPassword", null, locale);
         return constructEmail("Reset Password", message + " \r\n" + url, user);
     }

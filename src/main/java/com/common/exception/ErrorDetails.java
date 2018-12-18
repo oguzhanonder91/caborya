@@ -1,20 +1,25 @@
 package com.common.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 /**
  * Created by oguzhanonder - 10.10.2018
  */
 public class ErrorDetails {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "EET")
     private Date timestamp;
     private String message;
     private String details;
+    private String endPoint;
 
-    public ErrorDetails(Date timestamp, String message, String details) {
+    public ErrorDetails(Date timestamp, String message, String details,String endPoint) {
         super();
         this.timestamp = timestamp;
         this.message = message;
         this.details = details;
+        this.endPoint = endPoint;
     }
 
     public Date getTimestamp() {
@@ -39,5 +44,13 @@ public class ErrorDetails {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 }

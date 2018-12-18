@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 import java.util.ArrayList;
 import java.util.List;

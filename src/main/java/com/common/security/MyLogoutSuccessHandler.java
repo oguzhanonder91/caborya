@@ -1,7 +1,6 @@
-package com.common.util;
+package com.common.security;
 
 import com.common.entity.User;
-import com.common.interceptor.UserInterceptor;
 import com.common.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

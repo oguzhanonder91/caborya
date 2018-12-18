@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 /**
  * Created by oguzhanonder - 29.10.2018

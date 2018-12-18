@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

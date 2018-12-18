@@ -1,4 +1,4 @@
-package com.common.util;
+package com.common.security;
 
 import org.springframework.stereotype.Component;
 

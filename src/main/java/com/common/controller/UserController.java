@@ -3,6 +3,8 @@ package com.common.controller;
 import com.common.dto.PasswordDto;
 import com.common.entity.VerificationToken;
 import com.common.exception.BaseServerException;
+import com.common.security.AuthenticationInformation;
+import com.common.security.ISecurityUserService;
 import com.common.util.*;
 import com.common.dto.UserDto;
 import com.common.entity.User;
@@ -88,8 +90,8 @@ public class UserController {
     }
 
     // forget password
-    @PutMapping(value = "/resetPassword")
-    public ResponseEntity<String> resetPassword(HttpServletRequest request, @RequestParam("email")  String userEmail) {
+    @PutMapping(value = "/resetPassword/{email}")
+    public ResponseEntity<String> resetPassword(HttpServletRequest request, @PathVariable("email")  String userEmail) {
          User user = userService.findByEmail(userEmail);
         if (user != null) {
              String token = UUID.randomUUID().toString();
@@ -99,9 +101,9 @@ public class UserController {
         return new ResponseEntity<>(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()),HttpStatus.OK);
     }
 
-    @GetMapping(value = "/changePassword/{userOid}/{token}")
-    public String showChangePasswordPage(Locale locale, Model model, @RequestParam("userOid")  String oid, @RequestParam("token") String token) {
-        String result = securityUserService.validatePasswordResetToken(oid, token);
+    @GetMapping(value = "/changePassword/{userId}/{token}")
+    public String showChangePasswordPage(Locale locale, Model model, @PathVariable("userId")  String id, @PathVariable("token") String token) {
+        String result = securityUserService.validatePasswordResetToken(id, token);
         if (result != null) {
             model.addAttribute("message", messages.getMessage("auth.message." + result, null, locale));
             return "redirect:/login?lang=" + locale.getLanguage();
