@@ -19,7 +19,7 @@ import java.util.Calendar;
 
 @Service
 @Transactional
-public class UserSecurityService implements ISecurityUserService {
+public class SecurityUserServiceImpl implements SecurityUserService {
 
     @Autowired
     private PasswordResetTokenService passwordResetTokenService;

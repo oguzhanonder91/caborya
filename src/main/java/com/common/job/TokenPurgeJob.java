@@ -1,7 +1,5 @@
 package com.common.job;
 
-import com.common.repository.PasswordResetTokenRepository;
-import com.common.repository.VerificationTokenRepository;
 import com.common.service.PasswordResetTokenService;
 import com.common.service.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;

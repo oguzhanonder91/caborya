@@ -1,14 +1,11 @@
 package com.common.service.impl;
 
 import com.common.dao.BaseDao;
-import com.common.entity.User;
 import com.common.repository.BaseRepository;
 import com.common.entity.BaseEntity;
 import com.common.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Date;
 import java.util.List;

@@ -1,10 +1,8 @@
 package com.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Created by oguzhanonder - 18.10.2018

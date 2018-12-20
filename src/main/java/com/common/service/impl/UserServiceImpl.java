@@ -6,16 +6,10 @@ import com.common.entity.PasswordResetToken;
 import com.common.entity.User;
 import com.common.entity.VerificationToken;
 import com.common.repository.UserRepository;
-import com.common.repository.VerificationTokenRepository;
 import com.common.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by oguzhanonder - 18.10.2018

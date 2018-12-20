@@ -1,8 +1,6 @@
 package com.common.controller;
 
-import com.common.dto.UserDto;
 import com.common.entity.Role;
-import com.common.entity.User;
 import com.common.exception.BaseNotFoundException;
 import com.common.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;

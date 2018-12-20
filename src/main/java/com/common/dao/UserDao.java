@@ -6,32 +6,17 @@ import com.common.entity.Role;
 import com.common.entity.User;
 import com.common.entity.VerificationToken;
 import com.common.exception.BaseException;
-import com.common.exception.BaseServerException;
-import com.common.repository.PasswordResetTokenRepository;
-import com.common.repository.RoleRepository;
-import com.common.repository.UserRepository;
 import com.common.service.PasswordResetTokenService;
 import com.common.service.RoleService;
 import com.common.service.UserService;
 import com.common.service.VerificationTokenService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**

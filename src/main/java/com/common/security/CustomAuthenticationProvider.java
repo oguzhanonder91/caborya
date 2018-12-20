@@ -1,18 +1,13 @@
 package com.common.security;
 
 import com.common.entity.User;
-import com.common.exception.BaseServerException;
-import com.common.repository.UserRepository;
 import com.common.service.UserService;
-import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by oguzhanonder - 29.10.2018

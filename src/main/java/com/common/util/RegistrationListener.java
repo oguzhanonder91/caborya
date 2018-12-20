@@ -2,7 +2,6 @@ package com.common.util;
 
 import com.common.entity.User;
 import com.common.entity.VerificationToken;
-import com.common.service.UserService;
 import com.common.service.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

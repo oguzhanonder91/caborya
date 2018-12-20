@@ -3,8 +3,8 @@ package com.common.controller;
 import com.common.dto.PasswordDto;
 import com.common.entity.VerificationToken;
 import com.common.exception.BaseServerException;
-import com.common.security.AuthenticationInformation;
-import com.common.security.ISecurityUserService;
+import com.common.security.AuthenticationInformationImpl;
+import com.common.security.SecurityUserService;
 import com.common.util.*;
 import com.common.dto.UserDto;
 import com.common.entity.User;
@@ -50,10 +50,10 @@ public class UserController {
     private CommonMethod commonMethod;
 
     @Autowired
-    private AuthenticationInformation information;
+    private AuthenticationInformationImpl information;
 
     @Autowired
-    private ISecurityUserService securityUserService;
+    private SecurityUserService securityUserService;
 
     @GetMapping
     public List<User> findAll() {
