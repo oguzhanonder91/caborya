@@ -139,7 +139,7 @@ public class UserController {
     public void delete(Locale locale,@PathVariable String id) {
         Optional<User> user = userService.findById(id);
         if (!user.isPresent())
-            throw new BaseNotFoundException(id + messages.getMessage("message.resendToken", null, locale));
+            throw new BaseNotFoundException(id + messages.getMessage("message.notFound", null, locale));
         userService.delete(user.get());
     }
 
@@ -147,7 +147,7 @@ public class UserController {
     public User updateUser(Locale locale,@RequestBody User user, @PathVariable String id) {
         Optional<User> oldUser = userService.findById(id);
         if (!oldUser.isPresent())
-            throw new BaseNotFoundException(id + messages.getMessage("message.resendToken", null, locale));
+            throw new BaseNotFoundException(id + messages.getMessage("message.notFound", null, locale));
         return userService.update(user);
     }
 
