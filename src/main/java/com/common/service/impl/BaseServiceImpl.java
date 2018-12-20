@@ -24,7 +24,6 @@ public class BaseServiceImpl<T extends BaseEntity> implements BaseService<T> {
     @Autowired
     private BaseDao baseDao;
 
-
     @Override
     public List<T> saveAll(List<T> list) {
         list.stream()

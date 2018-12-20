@@ -31,7 +31,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     @Override
     public User registerNewUserAccount(UserDto accountDto) {
         User user = userDao.registerNewUserAccount(accountDto);
-        return super.save(user);
+        return this.save(user);
     }
 
     @Override
