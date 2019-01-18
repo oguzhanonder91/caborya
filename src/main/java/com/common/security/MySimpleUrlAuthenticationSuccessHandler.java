@@ -2,9 +2,12 @@ package com.common.security;
 
 import com.common.entity.User;
 import com.common.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -13,10 +16,12 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Date;
 
@@ -29,6 +34,8 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -37,12 +44,15 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     @Autowired
     UserService userService;
 
+    @Value("${cookie.name}")
+    private String cookie;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        //handle(request, response, authentication);
         HttpSession session = request.getSession(false);
 
         String email = ((User)authentication.getPrincipal()).getEmail();
+
         LOGGER.info("Login Successful with Principal: " + email);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60);
@@ -59,11 +69,24 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             userLogin.setLastLoginTime(new Date(System.currentTimeMillis()));
             userService.update(userLogin);
 
+            User loginUser = ((User)authentication.getPrincipal());
+            CustomUserDetails customUserDetails = new CustomUserDetails();
+            customUserDetails.setEmail(loginUser.getEmail());
+            customUserDetails.setName(loginUser.getName());
+            customUserDetails.setSurname(loginUser.getSurname());
+            customUserDetails.setRoleList(loginUser.getRoles());
+            customUserDetails.setActive(loginUser.isEnabled());
+            customUserDetails.setSessionId(session.getId());
+
+            PrintWriter writer = response.getWriter();
+            mapper.writeValue(writer, customUserDetails);
+            response.getWriter().flush();
+
         }
         clearAuthenticationAttributes(request);
     }
 
-    protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+   /* protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
@@ -71,9 +94,9 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             return;
         }
         redirectStrategy.sendRedirect(request, response, targetUrl);
-    }
+    }*/
 
-    protected String determineTargetUrl(Authentication authentication) {
+   /* protected String determineTargetUrl(Authentication authentication) {
         boolean isUser = false;
         boolean isAdmin = false;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -100,7 +123,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         } else {
             throw new IllegalStateException();
         }
-    }
+    }*/
 
     protected void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -108,6 +131,22 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             return;
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+    }
+
+    private String gerUserName(Authentication authentication) {
+        return ((User) authentication.getPrincipal()).getName();
+    }
+
+    private void addWelcomeCookie(String user, HttpServletResponse response) {
+        Cookie welcomeCookie = getWelcomeCookie(user);
+        response.addHeader(cookie,welcomeCookie.getValue());
+        response.addCookie(welcomeCookie);
+    }
+
+    private Cookie getWelcomeCookie(String user) {
+        Cookie welcomeCookie = new Cookie(cookie, user);
+        welcomeCookie.setMaxAge(30*60); // 30 days
+        return welcomeCookie;
     }
 
     public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {

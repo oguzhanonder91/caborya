@@ -39,10 +39,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
             User userLogin = userService.findByEmail(email);
             userLogin.setLastLogoutTime(new Date(System.currentTimeMillis()));
             userService.update(userLogin);
-
-            //response.setStatus(HttpServletResponse.SC_OK);
         }
 
-        //response.sendRedirect("/logout.html?logSucc=true");
     }
 }

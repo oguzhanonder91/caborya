@@ -13,16 +13,24 @@ import com.common.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 
 
@@ -61,11 +69,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findOne(Locale locale,@PathVariable String id) {
+    public User findOne(Locale locale, @PathVariable String id) {
         Optional<User> user = userService.findById(id);
         if (!user.isPresent())
             throw new BaseNotFoundException(id + messages.getMessage("message.userNotFound", null, locale));
         return user.get();
+    }
+
+    @GetMapping("/loginUser")
+    public  User getLoginUser() {
+        return (User) information.getAuthentication().getPrincipal();
     }
 
     @PostMapping("/registration")
