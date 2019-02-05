@@ -132,5 +132,6 @@ public class User extends BaseEntity {
     public void setLastLogoutTime(Date lastLogoutTime) {
         this.lastLogoutTime = lastLogoutTime;
     }
+
 }
 

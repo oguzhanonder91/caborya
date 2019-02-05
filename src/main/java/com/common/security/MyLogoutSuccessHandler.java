@@ -2,6 +2,7 @@ package com.common.security;
 
 import com.common.entity.User;
 import com.common.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by oguzhanonder - 29.10.2018
@@ -23,6 +27,8 @@ import java.util.Date;
 public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private static  final Logger LOGGER = LoggerFactory.getLogger(MyLogoutSuccessHandler.class);
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     UserService userService;
@@ -39,7 +45,13 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
             User userLogin = userService.findByEmail(email);
             userLogin.setLastLogoutTime(new Date(System.currentTimeMillis()));
             userService.update(userLogin);
+
+            Map<String, String> messageMap = new HashMap<String, String>();
+            messageMap.put("message", "Successfully logged out");
+            PrintWriter writer = response.getWriter();
+            mapper.writeValue(writer, messageMap);
         }
+
 
     }
 }

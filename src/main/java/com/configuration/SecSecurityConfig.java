@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -76,6 +77,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -104,13 +106,12 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         http.authorizeRequests().antMatchers("/**/*.{js,html,css}").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/login").permitAll()
+                .anyRequest().fullyAuthenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
                 .successHandler(myAuthenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
-                .authenticationDetailsSource(authenticationDetailsSource)
                 .permitAll()
                 .and()
                 .sessionManagement()
@@ -119,7 +120,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutSuccessHandler(myLogoutSuccessHandler)
-                .invalidateHttpSession(true)
+                .invalidateHttpSession(false)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
                 .and()

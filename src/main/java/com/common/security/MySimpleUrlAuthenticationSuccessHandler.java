@@ -44,9 +44,6 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     @Autowired
     UserService userService;
 
-    @Value("${cookie.name}")
-    private String cookie;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         HttpSession session = request.getSession(false);
@@ -69,18 +66,10 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             userLogin.setLastLoginTime(new Date(System.currentTimeMillis()));
             userService.update(userLogin);
 
-            User loginUser = ((User)authentication.getPrincipal());
-            CustomUserDetails customUserDetails = new CustomUserDetails();
-            customUserDetails.setEmail(loginUser.getEmail());
-            customUserDetails.setName(loginUser.getName());
-            customUserDetails.setSurname(loginUser.getSurname());
-            customUserDetails.setRoleList(loginUser.getRoles());
-            customUserDetails.setActive(loginUser.isEnabled());
-            customUserDetails.setSessionId(session.getId());
-
             PrintWriter writer = response.getWriter();
-            mapper.writeValue(writer, customUserDetails);
+            mapper.writeValue(writer, new CustomUserDetails(response.getHeader("Set-Cookie")));
             response.getWriter().flush();
+
 
         }
         clearAuthenticationAttributes(request);
@@ -137,14 +126,15 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         return ((User) authentication.getPrincipal()).getName();
     }
 
-    private void addWelcomeCookie(String user, HttpServletResponse response) {
-        Cookie welcomeCookie = getWelcomeCookie(user);
-        response.addHeader(cookie,welcomeCookie.getValue());
+    private void addWelcomeCookie(String user, HttpServletResponse response,HttpServletRequest request) {
+        Cookie welcomeCookie = getWelcomeCookie(user,request);
         response.addCookie(welcomeCookie);
     }
 
-    private Cookie getWelcomeCookie(String user) {
-        Cookie welcomeCookie = new Cookie(cookie, user);
+    private Cookie getWelcomeCookie(String user, HttpServletRequest request) {
+        Cookie welcomeCookie = new Cookie("caborya", user);
+        welcomeCookie.setPath(request.getContextPath());
+        welcomeCookie.setDomain(request.getHeaders("origin").nextElement().split("//")[1].replace(":",""));
         welcomeCookie.setMaxAge(30*60); // 30 days
         return welcomeCookie;
     }

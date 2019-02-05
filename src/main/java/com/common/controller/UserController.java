@@ -4,6 +4,7 @@ import com.common.dto.PasswordDto;
 import com.common.entity.VerificationToken;
 import com.common.exception.BaseServerException;
 import com.common.security.AuthenticationInformationImpl;
+import com.common.security.CustomUserDetails;
 import com.common.security.SecurityUserService;
 import com.common.util.*;
 import com.common.dto.UserDto;
@@ -77,8 +78,9 @@ public class UserController {
     }
 
     @GetMapping("/loginUser")
-    public  User getLoginUser() {
-        return (User) information.getAuthentication().getPrincipal();
+    public  CustomUserDetails getLoginUser() {
+        User user = (User)information.getAuthentication().getPrincipal();
+        return new CustomUserDetails(user.getId(),user.getEmail(),user.getName(),user.getSurname(),user.getRoles(),user.isEnabled());
     }
 
     @PostMapping("/registration")
