@@ -106,6 +106,8 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         http.authorizeRequests().antMatchers("/**/*.{js,html,css}").permitAll()
+                .antMatchers("/user/registration").permitAll()
+                .antMatchers("/user/registrationConfirm/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
