@@ -2,8 +2,8 @@ package com.common.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -30,7 +31,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        super.onAuthenticationFailure(request, response, exception);
+       // super.onAuthenticationFailure(request, response, exception);
 
         Locale locale = localeResolver.resolveLocale(request);
 
@@ -44,6 +45,9 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             errorMessage = messages.getMessage("auth.message.blocked", null, locale);
         }
 
-        request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        String jsonPayload = "{\"message\" : \"%s\", \"status\" : \"%s\" ,\"timestamp\" : \"%s\"}";
+
+        response.getOutputStream().println(String.format(jsonPayload, errorMessage, HttpStatus.UNAUTHORIZED,Calendar.getInstance().getTime()));
     }
 }
