@@ -4,6 +4,7 @@ import com.common.entity.User;
 import com.common.entity.VerificationToken;
 import com.common.service.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,6 +33,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Autowired
     private Environment env;
 
+    @Value( "${mail.baseUrl}" )
+    private String mailBaseUrl;
+
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
         this.confirmRegistration(event);
@@ -50,7 +54,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private SimpleMailMessage constructEmailMessage(OnRegistrationCompleteEvent event, User user, String token) {
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
-        String confirmationUrl = event.getAppUrl() + File.separator+ "user" + File.separator+"registrationConfirm" + File.separator + token;
+        String confirmationUrl = mailBaseUrl + File.separator+ "user" + File.separator+"registrationConfirm" + File.separator + token;
         String message = messageSource.getMessage("message.regSucc", null, event.getLocale());
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
